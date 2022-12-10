@@ -18,7 +18,7 @@ You'll soon get a summary of the execution:
 ```
 Inspect the file known_devices_new.yaml and if you're happy with the result, execute
 ```bash
-cd ../.storage
+cd ../
 mv known_devices.yaml known_devices_old.yaml
 mv known_devices_new.yaml known_devices.yaml
 ```
