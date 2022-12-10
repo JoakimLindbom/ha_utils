@@ -16,14 +16,15 @@ You'll soon get a summary of the execution:
 2022-12-10 17:23:55 INFO [__main__] Number of total keys :          29941
 2022-12-10 17:23:55 INFO [__main__] Number of total lines :         209589
 ```
-Inspect the file known_out.yaml and if you're happy with the result, execute
+Inspect the file known_devices_new.yaml and if you're happy with the result, execute
 ```bash
 cd ../.storage
-mv known_devices.yaml  known_devices_old.yaml
-mv known_out.yaml known_devices.yaml
+mv known_devices.yaml known_devices_old.yaml
+mv known_devices_new.yaml known_devices.yaml
 ```
 Restart HA to get an effect of the change
 
 ### In case of error
 You'll have a backup copy in known_devices_old.yaml to restore if anything goes south.
+
 The program also creates a file called keys_out.yaml. This can be used for error tracking and more.
