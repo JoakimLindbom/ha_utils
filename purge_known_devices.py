@@ -21,12 +21,14 @@ PATTERN = ['ble_', 'le_']  # Change here if you want to remove another set of pa
 
 log = logging.getLogger(__name__)
 
+
 class KnownDevices:
     def __init__(self, in_filename: str, in_filename_out: str, in_filename_keys: str = None):
         self.out = None
         self.filename_in = in_filename
         self.filename_out = in_filename_out
         self.filename_keys = in_filename_keys
+        self.keyfile = None
         self.block = []
         self.line_counter = 0
         self.found = 0
@@ -77,10 +79,10 @@ class KnownDevices:
                             log.error(f"File {PATH} does not contain well formed yaml. Last key found: {self.last_key_found} Line counter: {self.line_counter}")
                             sys.exit(1)
 
-            log.info(f"Number of occurrences kept: {self.found}")
-            log.info(f"Number of occurrences of removed : {self.removed}")
-            log.info(f"Number of total keys : {self.keys}")
-            log.info(f"Number of total lines : {self.line_counter}")
+            log.info(f"Number of occurrences kept:     {self.found}")
+            log.info(f"Number of occurrences removed : {self.removed}")
+            log.info(f"Number of total keys :          {self.keys}")
+            log.info(f"Number of total lines :         {self.line_counter}")
             self.out.close()
             if self.filename_keys is not None:
                 self.keyfile.close()
@@ -96,9 +98,9 @@ class KnownDevices:
 
         self.write_keyfile(self.block[0])
 
-        if (self.check_pattern(self.block[0]) or (self.check_mac_adress(self.block[0][:len(self.block[0]) - 2]) and self.check_mac_line(self.block[2]))):
+        if (self.check_pattern(self.block[0]) or (self.check_mac_address(self.block[0][:len(self.block[0]) - 2]) and self.check_mac_line(self.block[2]))):
             self.removed += 1
-            self.block=[]
+            self.block = []
             return
 
         self.found += 1
@@ -122,19 +124,19 @@ class KnownDevices:
                 if check_mac is False:
                     return True
                 else:
-                    if self.check_mac_adress(str1[len(p):len(str1)-2]):
+                    if self.check_mac_address(str1[len(p):len(str1)-2]):
                         return True
         return False
 
-    def check_mac_adress(self, name):
-        """Check if name corresponds to a MAC adress using different separators and optional single quotes"""
+    def check_mac_address(self, name):
+        """Check if name corresponds to a MAC address using different separators and optional single quotes"""
         if name is None:
             return False
 
         if self.regex is None:
             # 6 sets of hexadecimals in groups of 2, with :_- separation. Optionally start and end with a single quote (')
             r = ("^([']*)([0-9A-Fa-f]{2}[:_-]){5}" +
-                     "([0-9A-Fa-f]{2})([']*)$")
+                 "([0-9A-Fa-f]{2})([']*)$")
             self.regex = re.compile(r)
 
         if re.search(self.regex, name):
