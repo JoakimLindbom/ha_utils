@@ -14,8 +14,8 @@ import logging
 import sys
 import re
 
-PATH = "known_devices.yaml"  # Change path, so it's correct relative to where you store this script
-PATH_OUT = "known_out.yaml"
+PATH = "../known_devices.yaml"  # Change path, so it's correct relative to where you store this script
+PATH_OUT = "../known_devices_new.yaml"
 PATH_KEYS = "keys_out.yaml"
 PATTERN = ['ble_', 'le_']  # Change here if you want to remove another set of pattern signatures
 
@@ -35,7 +35,7 @@ class KnownDevices:
         self.regex = None
         self.last_key_found = ""
 
-    def load_file(self):
+    def purge_file(self):
         """Open yaml file and read through looking for PATTERN.
         """
         in_block = False
@@ -68,8 +68,6 @@ class KnownDevices:
                             self.block = []
                         in_block = True
                         self.keys += 1
-                        if self.keys == 29940:
-                            print("!")
                         self.last_key_found = line
                         self.block.append(line)
                     elif line[:2] == "  ":
@@ -96,7 +94,7 @@ class KnownDevices:
         if self.block[0] == '':
             return
 
-        self.write_key(self.block[0])
+        self.write_keyfile(self.block[0])
 
         if (self.check_pattern(self.block[0]) or (self.check_mac_adress(self.block[0][:len(self.block[0]) - 2]) and self.check_mac_line(self.block[2]))):
             self.removed += 1
@@ -109,6 +107,15 @@ class KnownDevices:
         self.block = []
         return
 
+    def write_outfile(self):
+        if self.block is not [] and self.block[0] != '':
+            self.out.writelines(self.block)
+            self.out.write("\n")
+
+    def write_keyfile(self, key):
+        if self.filename_keys is not None and self.block != [] and self.block[0] != "" and self.block[0] != "\n":
+            self.keyfile.write(key)
+
     def check_pattern(self, str1: str, check_mac: bool = False):
         for p in PATTERN:
             if p == str1[:len(p)]:
@@ -118,17 +125,6 @@ class KnownDevices:
                     if self.check_mac_adress(str1[len(p):len(str1)-2]):
                         return True
         return False
-
-    def write_outfile(self):
-        if self.block is not [] and self.block[0] != '':
-            self.out.writelines(self.block)
-            self.out.write("\n")
-
-    def write_key(self, key):
-        if key == 'le_nc700_5011:':
-            print("!")
-        if self.filename_keys is not None and self.block != [] and self.block[0] != "" and self.block[0] != "\n":
-            self.keyfile.write(key)
 
     def check_mac_adress(self, name):
         """Check if name corresponds to a MAC adress using different separators and optional single quotes"""
@@ -160,7 +156,7 @@ def main():
     logging.basicConfig(format=fmt, datefmt=datefmt, level=logging.DEBUG)
 
     kd = KnownDevices(PATH, PATH_OUT, PATH_KEYS)
-    kd.load_file()
+    kd.purge_file()
 
 
 if __name__ == "__main__":

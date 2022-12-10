@@ -8,6 +8,14 @@ Run the script by placing it in this file in e.g. config/scripts/ an start it wi
 ```bash
 python3 purge_known_devices.py
 ```
+You'll soon get a summary of the execution:
+```
+2022-12-10 17:23:55 INFO [__main__] Looping through known_devices.yaml
+2022-12-10 17:23:55 INFO [__main__] Number of occurrences kept: 21
+2022-12-10 17:23:55 INFO [__main__] Number of occurrences of removed : 29920
+2022-12-10 17:23:55 INFO [__main__] Number of total keys : 29941
+2022-12-10 17:23:55 INFO [__main__] Number of total lines : 209589
+```
 Inspect the file known_out.yaml and if you're happy with the result, execute
 ```bash
 cd ../.storage
